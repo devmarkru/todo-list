@@ -13,23 +13,27 @@ class TodoListRepository(
 
     fun findAll(): List<TodoItem> =
         jdbcClient
-            .sql("select id, title, order_num from todo order by order_num")
+            .sql("select id, title, order_num from todo order by order_num desc")
             .query(RowMapperCompanion)
             .list()
 
-    fun save(title: String): TodoItem {
-        val newOrder = jdbcClient // todo порядок передавать снаружи как параметр
-            .sql("select coalesce(min(order_num), 0) - 1 from todo")
-            .query(Long::class.java)
-            .single()
+    fun save(title: String, order: Int): TodoItem {
         val keyHolder = GeneratedKeyHolder()
         jdbcClient
             .sql("insert into todo(title, order_num) values (:title, :order)")
             .param("title", title)
-            .param("order", newOrder)
+            .param("order", order)
             .update(keyHolder)
-        return TodoItem(keyHolder.key!!.toLong(), title, newOrder.toInt())
+        return TodoItem(keyHolder.key!!.toLong(), title, order)
     }
+
+    fun findMaxOrder(): Int? =
+        jdbcClient
+            .sql("select max(order_num) from todo")
+            .query(Long::class.java)
+            .list()
+            .firstOrNull()
+            ?.toInt()
 
     companion object {
         val RowMapperCompanion = RowMapper { rs, _ ->
