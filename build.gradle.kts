@@ -40,3 +40,9 @@ kotlin {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks {
+    bootJar {
+        archiveFileName.set("devmark.jar")
+    }
+}
