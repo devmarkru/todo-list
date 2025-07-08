@@ -18,7 +18,7 @@ class TodoListRepository(
             .list()
 
     fun save(title: String): TodoItem {
-        val newOrder = jdbcClient
+        val newOrder = jdbcClient // todo порядок передавать снаружи как параметр
             .sql("select coalesce(min(order_num), 0) - 1 from todo")
             .query(Long::class.java)
             .single()
