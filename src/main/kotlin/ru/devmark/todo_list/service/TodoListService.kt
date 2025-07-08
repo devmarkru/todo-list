@@ -12,7 +12,9 @@ class TodoListService(
 
     fun getTodos(): List<TodoItem> = todoListRepository.findAll()
 
-    fun addTodo(request: CreateTodoItemRequest): TodoItem =
-        // todo в этом методе определять порядок с помощью отдельного запроса в БД, иначе ставить 1
-        todoListRepository.save(request.title)
+    fun addTodo(request: CreateTodoItemRequest): TodoItem {
+        val maxOrder = todoListRepository.findMaxOrder()
+        val newOrder = maxOrder?.plus(1) ?: 1
+        return todoListRepository.save(request.title, newOrder)
+    }
 }

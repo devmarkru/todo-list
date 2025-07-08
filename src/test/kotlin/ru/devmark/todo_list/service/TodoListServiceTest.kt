@@ -31,12 +31,16 @@ class TodoListServiceTest {
     @Test
     fun `addTodo delegates to repository`() {
         val request = CreateTodoItemRequest("new task")
-        val saved = TodoItem(3L, "new task", 1)
-        every { repository.save(request.title) } returns saved
+        every { repository.findMaxOrder() } returns 4
+        val saved = TodoItem(3L, "new task", 5)
+        every { repository.save(request.title, 5) } returns saved
 
         val result = service.addTodo(request)
 
         assertEquals(saved, result)
-        verify(exactly = 1) { repository.save(request.title) }
+        verify(exactly = 1) {
+            repository.findMaxOrder()
+            repository.save(request.title, 5)
+        }
     }
 }
