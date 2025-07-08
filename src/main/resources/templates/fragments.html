@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="head(title, description, domain)">
+    <title th:text="${title}"></title>
+    <meta name="description" th:if="${description != ''}" th:content="${description}">
+    <meta name="keywords" th:if="${keywords != null && keywords != ''}" th:content="${keywords}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/w3.css}">
+    <link th:if="${canonical != null}" rel="canonical" th:href="${canonical}">
+    <link th:if="${baseUrl != null}" rel="icon" th:href="@{{baseUrl}/favicon.png(baseUrl=${baseUrl})}" type="image/png">
+    <style>
+        html, body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+        }
+
+        h1, h2, h3 {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+    </style>
+
+    <script th:src="@{/js/utils.js}"></script>
+</head>
+<body>
+<th:block th:fragment="banner">
+            <!-- Здесь могла быть ваша реклама -->
+</th:block>
+<div th:fragment="menu(sel)">
+    <form role="search" method="get" action="/">
+        <div class="w3-bar w3-green">
+            <a href="/" class="w3-bar-item w3-button w3-hide-small" th:classappend="${sel} == 'articles' ? w3-amber : ''">Статьи</a>
+        </div>
+    </form>
+</div>
+<div id="message-box" class="w3-modal" th:fragment="message-dialog">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-red" id="message-box-header">
+            <span onclick="hide('#message-box')" class="w3-button w3-display-topright">&times;</span>
+            <h2>devmark.ru</h2>
+        </header>
+        <div class="w3-container">
+            <p id="message-box-text" class="w3-large"></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
