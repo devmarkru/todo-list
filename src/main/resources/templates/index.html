@@ -1,22 +1,56 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head th:replace="~{ fragments :: head('Добро пожаловать!', '', '') }"></head>
+<head th:replace="~{ fragments :: head('Todo List', '', '') }"></head>
 <body>
 <div th:replace="~{ fragments :: menu('404') }"></div>
 <br>
 <div class="w3-container">
-    <div class="w3-row">
-        <div class="w3-col m3">
-            <p></p>
-        </div>
-        <div class="w3-col m6">
-            <h1>Добро пожаловать!</h1>
-            <p>Некий текст.</p>
-        </div>
-        <div class="w3-col m3">
-            <p></p>
-        </div>
+    <h1>Todo List</h1>
+    <div class="w3-margin-bottom">
+        <input id="todo-title" class="w3-input w3-border" style="display: inline-block; width: 80%" type="text" placeholder="Новая задача">
+        <button id="add-btn" class="w3-button w3-green">Добавить</button>
     </div>
+    <table class="w3-table w3-striped w3-bordered">
+        <thead class="w3-green">
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Порядок</th>
+        </tr>
+        </thead>
+        <tbody id="todo-body"></tbody>
+    </table>
 </div>
-</body>
-</html>
+<script>
+function loadTodos() {
+    getData('/todo', renderTodos, {});
+}
+
+function renderTodos(items) {
+    clearChildren('#todo-body');
+    items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.appendChild(createElementWithText('td', item.id));
+        tr.appendChild(createElementWithText('td', item.title));
+        tr.appendChild(createElementWithText('td', item.order));
+        addChild('#todo-body', tr);
+    });
+}
+
+function addTodo() {
+    const title = getValue('#todo-title').trim();
+    if (!title) {
+        return;
+    }
+    postData('/todo', { title: title }, () => {
+        clearValue('#todo-title');
+        loadTodos();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('#add-btn').addEventListener('click', addTodo);
+    loadTodos();
+});
+</script>
+</body></html>
